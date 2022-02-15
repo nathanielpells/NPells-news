@@ -1,5 +1,6 @@
 const express = require("express");
 const { getTopics } = require("./controllers/topics.controller");
+const { getUsers } = require("./controllers/users.controller");
 const app = express();
 const {
   handle404,
@@ -9,8 +10,8 @@ const { getArticleById } = require("./controllers/articles.controller");
 
 app.use(express.json());
 app.get("/api/topics", getTopics);
-console.log(getArticleById);
 app.get("/api/articles/:article_id", getArticleById);
+app.get("/api/users", getUsers);
 
 // handling an invalid api path
 app.all("/*", handle404);

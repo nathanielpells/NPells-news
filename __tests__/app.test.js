@@ -26,7 +26,6 @@ describe("app", () => {
         .then((res) => {
           const resObj = res.body;
           resObj.topics.forEach((topic) => {
-            console.log(topic);
             expect(topic).toEqual(
               expect.objectContaining({
                 description: expect.any(String),
@@ -51,7 +50,6 @@ describe("app", () => {
         .get("/api/articles/1")
         .expect(200)
         .then(({ body: { article } }) => {
-          console.log(article);
           expect(article.author).toEqual("butter_bridge"),
             expect(article.title).toEqual(
               "Living in the shadow of a great man"
@@ -77,6 +75,31 @@ describe("app", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body).toEqual({ msg: "invalid data type(s) given" });
+        });
+    });
+  });
+  describe("GET - /api/users", () => {
+    test("status 200 - responds with all of the objects with the username property", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then((res) => {
+          const resObj = res.body;
+          resObj.users.forEach((user) => {
+            expect(user).toEqual(
+              expect.objectContaining({
+                username: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+    test("status: 404 - response with message - page not found", () => {
+      return request(app)
+        .get("/bad/path/")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("page not found");
         });
     });
   });
