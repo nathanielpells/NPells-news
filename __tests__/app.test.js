@@ -26,7 +26,6 @@ describe("app", () => {
         .then((res) => {
           const resObj = res.body;
           resObj.topics.forEach((topic) => {
-            console.log(topic);
             expect(topic).toEqual(
               expect.objectContaining({
                 description: expect.any(String),
@@ -51,7 +50,6 @@ describe("app", () => {
         .get("/api/articles/1")
         .expect(200)
         .then(({ body: { article } }) => {
-          console.log(article);
           expect(article.author).toEqual("butter_bridge"),
             expect(article.title).toEqual(
               "Living in the shadow of a great man"
@@ -81,21 +79,69 @@ describe("app", () => {
     });
   });
   describe("PATCH - /api/articles/:article_id ", () => {
-    // test("status 200 - update the first article so its votes is incremented by 1 then respond with the updated article", () => {
-    //   return request(app)
-    //     .get("/api/articles/1")
-    //     .send({ inc_votes: 1 })
-    //     .expect(202)
-    //     .then((updatedArticle) => {
-    //       expect(updatedArticle.body).toEqual({
-    //         title: "Living in the shadow of a great man",
-    //         topic: "mitch",
-    //         author: "butter_bridge",
-    //         body: "I find this existence challenging",
-    //         created_at: 1594329060000,
-    //         votes: 101,
+    test("status 200 - update the first article so its votes is incremented by a positive number then respond with the updated article", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              title: "Living in the shadow of a great man",
+              topic: "mitch",
+              author: "butter_bridge",
+              body: "I find this existence challenging",
+              created_at: expect.any(String),
+              votes: 101,
+            })
+          );
+        });
+    });
+    test("status 200 - update the first article so its votes is incremented by a negative then respond with the updated article", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: -1 })
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              title: "Living in the shadow of a great man",
+              topic: "mitch",
+              author: "butter_bridge",
+              body: "I find this existence challenging",
+              created_at: expect.any(String),
+              votes: 99,
+            })
+          );
+        });
+    });
+    test("status 400 for a request with an invalid increment number object", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: "hello" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "invalid data type(s) given" });
+        });
+    });
+    test("status 400 for a request with an invalid id", () => {
+      return request(app)
+        .patch("/api/articles/hello")
+        .send({ inc_votes: 1 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "invalid data type(s) given" });
+        });
+    });
+    //   test("status: 404 - id rquested is the correct data type but does not exist", () => {
+    //     return request(app)
+    //       .get("/api/articles/123456789")
+    //       .expect(404)
+    //       .then(({ body }) => {
+    //         expect(body.msg).toBe(
+    //           "`No article found for article_id: ${article_id}"
+    //         );
     //       });
-    //     });
-    // });
+    //   });
   });
 });

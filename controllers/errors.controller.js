@@ -8,3 +8,9 @@ exports.handlePsqlError = (err, req, res, next) => {
     res.status(400).send({ msg: "invalid data type(s) given" });
   else next(err);
 };
+
+exports.handleCustomError = (err, req, res, next) => {
+  if (err.status && err.msg) {
+    res.status(err.status).send({ msg: err.msg });
+  }
+};
