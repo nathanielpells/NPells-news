@@ -80,4 +80,22 @@ describe("app", () => {
         });
     });
   });
+  describe("PATCH - /api/articles/:article_id ", () => {
+    // test("status 200 - update the first article so its votes is incremented by 1 then respond with the updated article", () => {
+    //   return request(app)
+    //     .get("/api/articles/1")
+    //     .send({ inc_votes: 1 })
+    //     .expect(202)
+    //     .then((updatedArticle) => {
+    //       expect(updatedArticle.body).toEqual({
+    //         title: "Living in the shadow of a great man",
+    //         topic: "mitch",
+    //         author: "butter_bridge",
+    //         body: "I find this existence challenging",
+    //         created_at: 1594329060000,
+    //         votes: 101,
+    //       });
+    //     });
+    // });
+  });
 });
