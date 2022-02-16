@@ -9,6 +9,7 @@ const app = express();
 const {
   handle404,
   handlePsqlError,
+  handle500,
 } = require("./controllers/errors.controller");
 
 app.use(express.json());
@@ -21,5 +22,6 @@ app.get("/api/users", getUsers);
 app.all("/*", handle404);
 //handling other errors
 app.use(handlePsqlError);
+app.use(handle500);
 
 module.exports = app;

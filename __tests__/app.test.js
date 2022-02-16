@@ -131,5 +131,13 @@ describe("app", () => {
           expect(articles).toBeSortedBy("created_at", { descending: true });
         });
     });
+    test("status: 404 - response with message - page not found", () => {
+      return request(app)
+        .get("/bad/path/")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("page not found");
+        });
+    });
   });
 });
