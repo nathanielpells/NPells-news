@@ -103,4 +103,33 @@ describe("app", () => {
         });
     });
   });
+  describe("GET - GET /api/articles", () => {
+    test("status 200, responds with article object with all of the required properties", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((res) => {
+          const resObj = res.body;
+          resObj.articles.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+    test("status: 200 - returns articles objects ordered by date by default and in descending ordering ", () => {
+      return request(app)
+        .get("/api/articles")
+        .then(({ body: { articles } }) => {
+          expect(articles).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+  });
 });
