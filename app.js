@@ -9,13 +9,11 @@ const {
 const {
   getArticleById,
   patchArticleById,
-  getArticleWithComments,
 } = require("./controllers/articles.controller");
 
 app.use(express.json());
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
-app.get("/api/articles/:article_id", getArticleWithComments);
 app.patch("/api/articles/:article_id", patchArticleById);
 
 // handling an invalid api path
