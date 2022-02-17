@@ -238,5 +238,21 @@ describe("app", () => {
           });
         });
     });
+    test("status 400 for a request with an invalid id", () => {
+      return request(app)
+        .get("/api/articles/hello/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "invalid data type(s) given" });
+        });
+    });
+    test("status: 404 - id requested is the correct data type but does not exist", () => {
+      return request(app)
+        .patch("/api/articles/123456789")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("No article found for article_id: 123456789");
+        });
+    });
   });
 });
