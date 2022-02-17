@@ -26,3 +26,7 @@ exports.updateArticle = (id, votes) => {
       return article;
     });
 };
+
+exports.fetchArticleWithComments = () => {
+  return db.query("ALTER TABLE articles ADD COLUMN comment_count INT;");
+};
