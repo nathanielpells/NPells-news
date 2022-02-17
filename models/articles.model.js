@@ -27,6 +27,13 @@ exports.updateArticle = (id, votes) => {
     });
 };
 
-exports.fetchArticleWithComments = () => {
-  return db.query("ALTER TABLE articles ADD COLUMN comment_count INT;");
+exports.fetchArticleWithComments = (id) => {
+  return db
+    .query(
+      "SELECT CAST(COUNT(comments.comment_id)AS int) AS comment_count FROM comments WHERE article_id = $1 GROUP BY article_id;",
+      [id]
+    )
+    .then((articles) => {
+      return articles.rows[0];
+    });
 };

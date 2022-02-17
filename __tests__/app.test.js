@@ -144,7 +144,7 @@ describe("app", () => {
     });
   });
   // describe.only("GET - /api/articles/:article:id (comment count)", () => {
-  //   test("status 200 - responds with the correct article with a comment_count column added.", () => {
+  //   test("status 200 - responds with the correct article with a comment_count property added.", () => {
   //     return request(app)
   //       .get("/api/articles/1")
   //       .expect(200)
@@ -157,7 +157,7 @@ describe("app", () => {
   //             body: "I find this existence challenging",
   //             created_at: "2020-07-09T20:11:00.000Z",
   //             votes: 100,
-  //             comment_count: expect.anything(),
+  //             comment_count: 11,
   //           })
   //         );
   //       });
