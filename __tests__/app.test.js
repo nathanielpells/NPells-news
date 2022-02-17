@@ -10,40 +10,42 @@ afterAll(() => db.end());
 beforeEach(() => seed(data));
 
 describe("app", () => {
-  describe("GET - /api/topics", () => {
-    test("status 200 responds with an array of treasure objects", () => {
-      return request(app)
-        .get("/api/topics")
-        .expect(200)
-        .then(({ body: { topics } }) => {
-          expect(topics).toHaveLength(3);
-        });
-    });
-    test("status 200. topics object should have all of the required properties.", () => {
-      return request(app)
-        .get("/api/topics")
-        .expect(200)
-        .then((res) => {
-          const resObj = res.body;
-          resObj.topics.forEach((topic) => {
-            expect(topic).toEqual(
-              expect.objectContaining({
-                description: expect.any(String),
-                slug: expect.any(String),
-              })
-            );
-          });
-        });
-    });
-    test("status: 404 - response with message - page not found", () => {
-      return request(app)
-        .get("/bad/path/")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).toBe("page not found");
-        });
-    });
+  test("status: 404 - response with message - page not found", () => {
+    return request(app)
+      .get("/bad/path/")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("page not found");
+      });
   });
+});
+
+describe("GET - /api/topics", () => {
+  test("status 200 responds with an array of treasure objects", () => {
+    return request(app)
+      .get("/api/topics")
+      .expect(200)
+      .then(({ body: { topics } }) => {
+        expect(topics).toHaveLength(3);
+      });
+  });
+  test("status 200. topics object should have all of the required properties.", () => {
+    return request(app)
+      .get("/api/topics")
+      .expect(200)
+      .then((res) => {
+        const resObj = res.body;
+        resObj.topics.forEach((topic) => {
+          expect(topic).toEqual(
+            expect.objectContaining({
+              description: expect.any(String),
+              slug: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+
   describe("GET - /api/articles/:article_id", () => {
     test("status 200, responds the correct object with the correct properties and values", () => {
       return request(app)
@@ -59,14 +61,6 @@ describe("app", () => {
             expect(article.topic).toEqual("mitch"),
             expect(typeof article.created_at).toBe("string"),
             expect(article.votes).toEqual(100);
-        });
-    });
-    test("status: 404 - response with message - page not found", () => {
-      return request(app)
-        .get("/bad/path/")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).toBe("page not found");
         });
     });
     test("status 400 for a post with the wrong data type with a message of invalid data type given", () => {
@@ -217,6 +211,7 @@ describe("app", () => {
         });
     });
   });
+
   describe("GET - /api/articles/:article_id/comments", () => {
     test("Status 200 - respond with an array of comments for the given article_id with all of the correct properties.", () => {
       return request(app)
@@ -252,6 +247,26 @@ describe("app", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("No article found for article_id: 123456789");
+
+  describe("GET - /api/articles/:article:id (comment count)", () => {
+    test("status 200 - responds with the correct article with a comment_count property added.", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: 1,
+              title: "Living in the shadow of a great man",
+              topic: "mitch",
+              author: "butter_bridge",
+              body: "I find this existence challenging",
+              created_at: "2020-07-09T20:11:00.000Z",
+              votes: 100,
+              comment_count: 11,
+            })
+          );
+
         });
     });
   });
