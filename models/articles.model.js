@@ -33,8 +33,11 @@ exports.updateArticle = (id, votes) => {
 
 exports.fetchArticles = () => {
   return db
-    .query("SELECT * FROM articles ORDER BY created_at DESC;")
+    .query(
+      "SELECT articles.*, CAST(COUNT(comments.comment_id)AS int) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC;"
+    )
     .then(({ rows: articles }) => {
       return articles;
     });
 };
+// "SELECT articles.*, CAST(COUNT(comments.comment_id)AS int) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id  WHERE articles.article_id = $1 GROUP BY articles.article_id;"

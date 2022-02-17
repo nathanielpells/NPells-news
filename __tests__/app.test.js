@@ -232,27 +232,27 @@ describe("GET - /api/topics", () => {
         });
     });
   });
-  // describe("GET - /api/articles", () => {
-  //   test("status 200 - responds with all of the articles with a comment count property added to them with the correct number of comments in each.", () => {
-  //     return request(app)
-  //       .get("/api/articles")
-  //       .expect(200)
-  //       .then((res) => {
-  //         const resObj = res.body;
-  //         resObj.articles.forEach((article) => {
-  //           expect(article).toEqual(
-  //             expect.objectContaining({
-  //               author: expect.any(String),
-  //               title: expect.any(String),
-  //               article_id: expect.any(Number),
-  //               topic: expect.any(String),
-  //               created_at: expect.any(String),
-  //               votes: expect.any(Number),
-  //               comment_count: expect.any(Number),
-  //             })
-  //           );
-  //         });
-  //       });
-  //   });
-  // });
+  describe("GET - /api/articles", () => {
+    test("status 200 - responds with all of the articles with a comment count property added to them with the correct number of comments in each.", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((res) => {
+          const resObj = res.body;
+          resObj.articles.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+  });
 });
