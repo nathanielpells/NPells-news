@@ -143,4 +143,24 @@ describe("app", () => {
         });
     });
   });
+  // describe("GET - /api/articles/:article:id (comment count)", () => {
+  //   test("status 200 - responds with the count of all the comments for an article assigned by its id.", () => {
+  //     return request(app)
+  //       .get("/api/articles/1")
+  //       .expect(200)
+  //       .then(({ body: { article } }) => {
+  //         expect(article).toEqual(
+  //           expect.objectContaining({
+  //             title: "Living in the shadow of a great man",
+  //             topic: "mitch",
+  //             author: "butter_bridge",
+  //             body: "I find this existence challenging",
+  //             created_at: expect.any(String),
+  //             votes: 100,
+  //             comment_count: 11,
+  //           })
+  //         );
+  //       });
+  //   });
+  // });
 });
