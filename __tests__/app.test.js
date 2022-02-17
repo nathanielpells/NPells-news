@@ -133,6 +133,16 @@ describe("app", () => {
           expect(body).toEqual({ msg: "invalid data type(s) given" });
         });
     });
+    test("status 400 for a request with an invalid object key and property", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ hello: "hello" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "invalid key and property given" });
+        });
+    });
+
     test("status: 404 - id requested is the correct data type but does not exist", () => {
       return request(app)
         .patch("/api/articles/123456789")

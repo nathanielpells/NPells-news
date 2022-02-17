@@ -5,6 +5,8 @@ exports.handle404 = (req, res) => {
 exports.handlePsqlError = (err, req, res, next) => {
   if (err.code === "22P02")
     res.status(400).send({ msg: "invalid data type(s) given" });
+  if (err.code === "23502")
+    res.status(400).send({ msg: "invalid key and property given" });
   else next(err);
 };
 
