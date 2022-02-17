@@ -133,15 +133,14 @@ describe("app", () => {
           expect(body).toEqual({ msg: "invalid data type(s) given" });
         });
     });
-    //   test("status: 404 - id rquested is the correct data type but does not exist", () => {
-    //     return request(app)
-    //       .get("/api/articles/123456789")
-    //       .expect(404)
-    //       .then(({ body }) => {
-    //         expect(body.msg).toBe(
-    //           "`No article found for article_id: ${article_id}"
-    //         );
-    //       });
-    //   });
+    test("status: 404 - id requested is the correct data type but does not exist", () => {
+      return request(app)
+        .patch("/api/articles/123456789")
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("No article found for article_id: 123456789");
+        });
+    });
   });
 });

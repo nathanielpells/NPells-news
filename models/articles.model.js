@@ -17,11 +17,10 @@ exports.updateArticle = (id, votes) => {
     )
     .then(({ rows }) => {
       const article = rows[0];
-      console.log(article);
       if (!article) {
         return Promise.reject({
           status: 404,
-          msg: `No article found for article_id: ${article_id}`,
+          msg: `No article found for article_id: ${id}`,
         });
       }
       return article;
