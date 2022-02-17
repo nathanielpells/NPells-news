@@ -78,6 +78,7 @@ describe("app", () => {
         });
     });
   });
+
   describe("PATCH - /api/articles/:article_id ", () => {
     test("status 200 - update the first article so its votes is incremented by a positive number then respond with the updated article", () => {
       return request(app)
@@ -150,6 +151,67 @@ describe("app", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("No article found for article_id: 123456789");
+
+  describe("GET - /api/users", () => {
+    test("status 200 - responds with all of the objects with the username property", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then((res) => {
+          const resObj = res.body;
+          resObj.users.forEach((user) => {
+            expect(user).toEqual(
+              expect.objectContaining({
+                username: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+    test("status: 404 - response with message - page not found", () => {
+      return request(app)
+        .get("/bad/path/")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("page not found");
+        });
+    });
+  });
+  describe("GET - GET /api/articles", () => {
+    test("status 200, responds with article object with all of the required properties", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((res) => {
+          const resObj = res.body;
+          resObj.articles.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+    test("status: 200 - returns articles objects ordered by date by default and in descending ordering ", () => {
+      return request(app)
+        .get("/api/articles")
+        .then(({ body: { articles } }) => {
+          expect(articles).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+    test("status: 404 - response with message - page not found", () => {
+      return request(app)
+        .get("/bad/path/")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("page not found");
+
         });
     });
   });
