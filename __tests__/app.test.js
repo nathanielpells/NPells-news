@@ -217,4 +217,26 @@ describe("app", () => {
         });
     });
   });
+  describe("GET - /api/articles/:article_id/comments", () => {
+    test("Status 200 - respond with an array of comments for the given article_id with all of the correct properties.", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then((res) => {
+          const resObj = res.body;
+          resObj.comments.forEach((comments) => {
+            expect(comments).toEqual(
+              expect.objectContaining({
+                comment_id: expect.any(Number),
+                author: expect.any(String),
+                article_id: expect.any(Number),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+  });
 });
