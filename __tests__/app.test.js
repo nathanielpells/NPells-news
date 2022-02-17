@@ -151,6 +151,9 @@ describe("app", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("No article found for article_id: 123456789");
+        });
+    });
+  });
 
   describe("GET - /api/users", () => {
     test("status 200 - responds with all of the objects with the username property", () => {
@@ -211,7 +214,6 @@ describe("app", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("page not found");
-
         });
     });
   });

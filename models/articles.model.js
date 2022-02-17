@@ -8,7 +8,6 @@ exports.fetchArticleById = (id) => {
     });
 };
 
-
 exports.updateArticle = (id, votes) => {
   return db
     .query(
@@ -24,12 +23,13 @@ exports.updateArticle = (id, votes) => {
         });
       }
       return article;
+    });
+};
 
 exports.fetchArticles = () => {
   return db
     .query("SELECT * FROM articles ORDER BY created_at DESC;")
     .then(({ rows: articles }) => {
       return articles;
-
     });
 };
