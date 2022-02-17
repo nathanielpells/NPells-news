@@ -78,6 +78,80 @@ describe("app", () => {
         });
     });
   });
+
+  describe("PATCH - /api/articles/:article_id ", () => {
+    test("status 200 - update the first article so its votes is incremented by a positive number then respond with the updated article", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              title: "Living in the shadow of a great man",
+              topic: "mitch",
+              author: "butter_bridge",
+              body: "I find this existence challenging",
+              created_at: expect.any(String),
+              votes: 101,
+            })
+          );
+        });
+    });
+    test("status 200 - update the first article so its votes is incremented by a negative then respond with the updated article", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: -1 })
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              title: "Living in the shadow of a great man",
+              topic: "mitch",
+              author: "butter_bridge",
+              body: "I find this existence challenging",
+              created_at: expect.any(String),
+              votes: 99,
+            })
+          );
+        });
+    });
+    test("status 400 for a request with an invalid increment number object", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: "hello" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "invalid data type(s) given" });
+        });
+    });
+    test("status 400 for a request with an invalid id", () => {
+      return request(app)
+        .patch("/api/articles/hello")
+        .send({ inc_votes: 1 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "invalid data type(s) given" });
+        });
+    });
+    test("status 400 for a request with an invalid object key and property", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ hello: "hello" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "invalid key and property given" });
+        });
+    });
+
+    test("status: 404 - id requested is the correct data type but does not exist", () => {
+      return request(app)
+        .patch("/api/articles/123456789")
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("No article found for article_id: 123456789");
+
   describe("GET - /api/users", () => {
     test("status 200 - responds with all of the objects with the username property", () => {
       return request(app)
@@ -137,6 +211,7 @@ describe("app", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("page not found");
+
         });
     });
   });

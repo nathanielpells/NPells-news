@@ -3,9 +3,16 @@ exports.handle404 = (req, res) => {
 };
 
 exports.handlePsqlError = (err, req, res, next) => {
-  console.log(err.code);
   if (err.code === "22P02")
     res.status(400).send({ msg: "invalid data type(s) given" });
+  if (err.code === "23502")
+    res.status(400).send({ msg: "invalid key and property given" });
+  else next(err);
+};
+
+exports.handleCustomError = (err, req, res, next) => {
+  console.log(err);
+  if (err.status && err.msg) res.status(err.status).send({ msg: err.msg });
   else next(err);
 };
 
