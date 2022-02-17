@@ -211,6 +211,43 @@ describe("GET - /api/topics", () => {
         });
     });
   });
+
+  describe("GET - /api/articles/:article_id/comments", () => {
+    test("Status 200 - respond with an array of comments for the given article_id with all of the correct properties.", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then((res) => {
+          const resObj = res.body;
+          resObj.comments.forEach((comments) => {
+            expect(comments).toEqual(
+              expect.objectContaining({
+                comment_id: expect.any(Number),
+                author: expect.any(String),
+                article_id: expect.any(Number),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+    test("status 400 for a request with an invalid id", () => {
+      return request(app)
+        .get("/api/articles/hello/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({ msg: "invalid data type(s) given" });
+        });
+    });
+    test("status: 404 - id requested is the correct data type but does not exist", () => {
+      return request(app)
+        .patch("/api/articles/123456789")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("No article found for article_id: 123456789");
+
   describe("GET - /api/articles/:article:id (comment count)", () => {
     test("status 200 - responds with the correct article with a comment_count property added.", () => {
       return request(app)
@@ -229,6 +266,7 @@ describe("GET - /api/topics", () => {
               comment_count: 11,
             })
           );
+
         });
     });
   });
