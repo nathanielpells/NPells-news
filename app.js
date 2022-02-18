@@ -2,6 +2,7 @@ const express = require("express");
 const { getEndpoints } = require("./controllers/api.controller");
 const { getTopics } = require("./controllers/topics.controller");
 const { getUsers } = require("./controllers/users.controller");
+const { deleteCommentById } = require("./controllers/comments.controller");
 const {
   getArticleById,
   getArticles,
@@ -9,14 +10,13 @@ const {
   getCommentsById,
   postComment,
 } = require("./controllers/articles.controller");
-const app = express();
 const {
   handle404,
   handlePsqlError,
   handle500,
   handleCustomError,
 } = require("./controllers/errors.controller");
-
+const app = express();
 app.use(express.json());
 
 app.get("/api", getEndpoints);
@@ -27,6 +27,7 @@ app.post("/api/articles/:article_id/comments", postComment);
 app.patch("/api/articles/:article_id", patchArticleById);
 app.get("/api/articles", getArticles);
 app.get("/api/users", getUsers);
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
 // handling an invalid api path
 app.all("/*", handle404);
