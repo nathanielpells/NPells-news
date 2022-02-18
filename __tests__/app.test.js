@@ -373,4 +373,25 @@ describe("app", () => {
         });
     });
   });
+  describe("DELETE - /api/comments/:comment_id", () => {
+    test("Status: 204 - delete comment by given id and return no content", () => {
+      return request(app).delete("/api/comments/1").expect(204);
+    });
+    test('Status: 400 - responds with "invalid data type(s) given" when passed an invalid id ', () => {
+      return request(app)
+        .delete("/api/comments/hello")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual("invalid data type(s) given");
+        });
+    });
+    test('Status: 404 - responds with "comment does not exist" when given a valid id which does not exist', () => {
+      return request(app)
+        .delete("/api/comments/1324253")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toEqual("comment does not exist");
+        });
+    });
+  });
 });
