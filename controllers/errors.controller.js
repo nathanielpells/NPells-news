@@ -8,11 +8,9 @@ exports.handlePsqlError = (err, req, res, next) => {
   if (err.code === "23502")
     res.status(400).send({ msg: "invalid key and property given" });
   if (err.code === "23503")
-    res
-      .status(404)
-      .send({
-        msg: 'Key (author)=(not-registered) is not present in table "users".',
-      });
+    res.status(404).send({
+      msg: 'Key (author)=(not-registered) is not present in table "users".',
+    });
   else next(err);
 };
 
@@ -23,6 +21,5 @@ exports.handleCustomError = (err, req, res, next) => {
 };
 
 exports.handle500 = (err, req, res) => {
-  console.log(err);
   res.status(500).send({ msg: "internal server error" });
 };
