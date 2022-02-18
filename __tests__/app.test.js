@@ -373,4 +373,17 @@ describe("app", () => {
         });
     });
   });
+  describe("GET /api", () => {
+    test("Status: 200 responds with endpoint descriptions", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.descriptions["GET /api"]).toEqual({
+            description:
+              "delivers a json describing of all the available endpoints of the api",
+          });
+        });
+    });
+  });
 });

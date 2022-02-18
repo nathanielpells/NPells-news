@@ -1,27 +1,103 @@
 {
   "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
+    "description": "delivers a json describing of all the available endpoints of the api"
   },
   "GET /api/topics": {
-    "description": "serves an array of all topics",
+    "description": "delivers an array of all topics",
     "queries": [],
     "exampleResponse": {
-      "topics": [{ "slug": "football", "description": "Footie!" }]
+      "topics": [{ "slug": "table tennis", "description": "ping-pong" }]
+    }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "topics": [{ "username": "Peter" }, { "username": "Parker" }]
     }
   },
   "GET /api/articles": {
     "description": "serves an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": "order",
     "exampleResponse": {
       "articles": [
         {
-          "title": "Seafood substitutions are increasing",
-          "topic": "cooking",
-          "author": "weegembump",
+          "title": "Hello",
+          "topic": "greeting",
+          "author": "GordonRamsey",
           "body": "Text from the article..",
-          "created_at": 1527695953341
+          "created_at": 1227795453481,
+          "votes": 11,
+          "comment_count": 1
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "returns article by article id",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Hello",
+        "topic": "greeting",
+        "author": "GordonRamsey",
+        "body": "Text from the article..",
+        "created_at": 1227795453481,
+        "comment_count": 5,
+        "votes": 1
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "updates article votes by article id with given request body and returns updated article",
+    "queries": [],
+    "exampleRequestBody": { "inc_votes": 1 },
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Hello",
+        "topic": "greeting",
+        "author": "GordonRamsey",
+        "body": "Text from the article..",
+        "created_at": 1227795453481,
+        "votes": 1,
+        "comment_count": 0
+      }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "returns an array of comments for a given article",
+    "queries": [],
+    "exampleResponse": [
+      {
+        "comment_id": 1,
+        "votes": 2,
+        "created_at": 1227795453481,
+        "author": "Peter",
+        "body": "Great writing.",
+        "article_id": 1
+      }
+    ]
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "adds comment and returns posted comment",
+    "queries": [],
+    "exampleRequestBody": { "username": "Parker", "body": "boring" },
+    "exampleResponse": [
+      {
+        "comment_id": 19,
+        "votes": 0,
+        "created_at": 1527695953341,
+        "author": "Parker",
+        "body": "boring.",
+        "article_id": 1
+      }
+    ]
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes specified comment from database and returns no body",
+    "queries": [],
+    "exampleResponse": {}
   }
 }
