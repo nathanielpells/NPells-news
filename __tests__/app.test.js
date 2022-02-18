@@ -294,13 +294,14 @@ describe("GET - /api/topics", () => {
           });
         });
     });
-    // test("Status: 200 - should respond with an array of article objects sorted by user's choice", () => {
-    //   return request(app)
-    //     .get("/api/articles?sort_by=votes")
-    //     .expect(200)
-    //     .then(({ body: articles }) => {
-    //       expect(articles).toBeSortedBy("votes", { descending: true });
-    //     });
+    //   test("Status: 200 - should respond with an array of article objects sorted by user's choice", () => {
+    //     return request(app)
+    //       .get("/api/articles?sort_by=votes")
+    //       .expect(200)
+    //       .then(({ body: articles }) => {
+    //         expect(articles).toBeSortedBy("votes", { descending: true });
+    //       });
+    //   });
     // });
   });
 });
