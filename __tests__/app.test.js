@@ -384,6 +384,9 @@ describe("app", () => {
             description:
               "delivers a json describing of all the available endpoints of the api",
           });
+        });
+    });
+  });
 
   describe("DELETE - /api/comments/:comment_id", () => {
     test("Status: 204 - delete comment by given id and return no content", () => {
@@ -403,7 +406,6 @@ describe("app", () => {
         .expect(404)
         .then(({ body: { msg } }) => {
           expect(msg).toEqual("comment does not exist");
-
         });
     });
   });
