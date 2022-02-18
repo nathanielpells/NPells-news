@@ -373,6 +373,18 @@ describe("app", () => {
         });
     });
   });
+
+  describe("GET /api", () => {
+    test("Status: 200 responds with endpoint descriptions", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.descriptions["GET /api"]).toEqual({
+            description:
+              "delivers a json describing of all the available endpoints of the api",
+          });
+
   describe("DELETE - /api/comments/:comment_id", () => {
     test("Status: 204 - delete comment by given id and return no content", () => {
       return request(app).delete("/api/comments/1").expect(204);
@@ -391,6 +403,7 @@ describe("app", () => {
         .expect(404)
         .then(({ body: { msg } }) => {
           expect(msg).toEqual("comment does not exist");
+
         });
     });
   });
