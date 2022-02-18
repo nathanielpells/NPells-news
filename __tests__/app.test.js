@@ -247,6 +247,9 @@ describe("GET - /api/topics", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("No article found for article_id: 123456789");
+        });
+    });
+  });
 
   describe("GET - /api/articles/:article:id (comment count)", () => {
     test("status 200 - responds with the correct article with a comment_count property added.", () => {
@@ -266,7 +269,6 @@ describe("GET - /api/topics", () => {
               comment_count: 11,
             })
           );
-
         });
     });
   });
