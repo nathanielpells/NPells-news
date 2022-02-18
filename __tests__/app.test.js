@@ -272,7 +272,7 @@ describe("GET - /api/topics", () => {
         });
     });
   });
-  describe("GET - /api/articles", () => {
+  describe.only("GET - /api/articles", () => {
     test("status 200 - responds with all of the articles with a comment count property added to them with the correct number of comments in each.", () => {
       return request(app)
         .get("/api/articles")
@@ -294,5 +294,13 @@ describe("GET - /api/topics", () => {
           });
         });
     });
+    //   test("Status: 200 - should respond with an array of article objects sorted by user's choice", () => {
+    //     return request(app)
+    //       .get("/api/articles?sort_by=votes")
+    //       .expect(200)
+    //       .then(({ body: articles }) => {
+    //         expect(articles).toBeSortedBy("votes", { descending: true });
+    //       });
+    //   });
   });
 });
