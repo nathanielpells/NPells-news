@@ -46,3 +46,28 @@ exports.fetchCommentsById = (id) => {
       return comments.rows;
     });
 };
+
+exports.addComment = (id, reqBody) => {
+  const { username, body } = reqBody;
+  const reqKeys = Object.keys(reqBody);
+  if (reqKeys.length < 2) {
+    return Promise.reject({
+      status: 400,
+      msg: "missing fields in request",
+    });
+  } else if (!reqKeys.includes("username") || !reqKeys.includes("body")) {
+    return Promise.reject({
+      status: 400,
+      msg: "invalid key",
+    });
+  } else {
+    return db
+      .query(
+        "INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;",
+        [id, username, body]
+      )
+      .then(({ rows: comment }) => {
+        return comment;
+      });
+  }
+};

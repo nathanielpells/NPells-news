@@ -18,32 +18,32 @@ describe("app", () => {
         expect(body.msg).toBe("page not found");
       });
   });
-});
 
-describe("GET - /api/topics", () => {
-  test("status 200 responds with an array of treasure objects", () => {
-    return request(app)
-      .get("/api/topics")
-      .expect(200)
-      .then(({ body: { topics } }) => {
-        expect(topics).toHaveLength(3);
-      });
-  });
-  test("status 200. topics object should have all of the required properties.", () => {
-    return request(app)
-      .get("/api/topics")
-      .expect(200)
-      .then((res) => {
-        const resObj = res.body;
-        resObj.topics.forEach((topic) => {
-          expect(topic).toEqual(
-            expect.objectContaining({
-              description: expect.any(String),
-              slug: expect.any(String),
-            })
-          );
+  describe("GET - /api/topics", () => {
+    test("status 200 responds with an array of treasure objects", () => {
+      return request(app)
+        .get("/api/topics")
+        .expect(200)
+        .then(({ body: { topics } }) => {
+          expect(topics).toHaveLength(3);
         });
-      });
+    });
+    test("status 200. topics object should have all of the required properties.", () => {
+      return request(app)
+        .get("/api/topics")
+        .expect(200)
+        .then((res) => {
+          const resObj = res.body;
+          resObj.topics.forEach((topic) => {
+            expect(topic).toEqual(
+              expect.objectContaining({
+                description: expect.any(String),
+                slug: expect.any(String),
+              })
+            );
+          });
+        });
+    });
   });
 
   describe("GET - /api/articles/:article_id", () => {
@@ -272,6 +272,7 @@ describe("GET - /api/topics", () => {
         });
     });
   });
+
   describe("GET - /api/articles", () => {
     test("status 200 - responds with all of the articles with a comment count property added to them with the correct number of comments in each.", () => {
       return request(app)
@@ -292,6 +293,83 @@ describe("GET - /api/topics", () => {
               })
             );
           });
+        });
+    });
+  });
+
+  describe("POST - /api/articles/:article_id/comments", () => {
+    test("status 201 - should respond with a posted comment when given valid id and comment object", () => {
+      const testComment = { username: "icellusedkars", body: "hello there" };
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(testComment)
+        .expect(201)
+        .then(({ body: { comment } }) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              article_id: 3,
+              comment_id: 19,
+              votes: 0,
+              created_at: expect.any(String),
+              author: "icellusedkars",
+              body: "hello there",
+            })
+          );
+        });
+    });
+    test("Status: 404 - responds with error message for a valid but unregistered user", () => {
+      const testComment = { username: "not-registered", body: "hello there" };
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(testComment)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe(
+            'Key (author)=(not-registered) is not present in table "users".'
+          );
+        });
+    });
+    test('Status: 400 - responds with message "bad request" when passed invalid id', () => {
+      const testComment = { username: "icellusedkars", body: "Some words." };
+      return request(app)
+        .post("/api/articles/hello/comments")
+        .send(testComment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("invalid data type(s) given");
+        });
+    });
+    test('Status: 400 - responds with  "missing fields in request" when passed an object with fewer than two keys', () => {
+      const testComment = { username: "icellusedkars" };
+      return request(app)
+        .post("/api/articles/4/comments")
+        .send(testComment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("missing fields in request");
+        });
+    });
+    test('Status: 400 - responds with "invalid key" when username key is not valid', () => {
+      const testComment = { banana: "icellusedkars", body: "Some words." };
+      return request(app)
+        .post("/api/articles/4/comments")
+        .send(testComment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("invalid key");
+        });
+    });
+    test('Status: 400 - responds with "invalid key" when body key is not valid', () => {
+      const testComment = {
+        user: "not-registered",
+        flyingbird: "Some words.",
+      };
+      return request(app)
+        .post("/api/articles/4/comments")
+        .send(testComment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("invalid key");
         });
     });
   });
