@@ -30,9 +30,9 @@ exports.patchArticleById = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  fetchArticles()
-    .then((articles) => {
-      res.status(200).send({ articles });
+  fetchArticles(req.query)
+    .then(({ articles, total_count }) => {
+      res.status(200).send({ articles, total_count });
     })
     .catch(next);
 };
