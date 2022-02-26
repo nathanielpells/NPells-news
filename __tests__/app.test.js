@@ -294,14 +294,83 @@ describe("GET - /api/topics", () => {
           });
         });
     });
-    //   test("Status: 200 - should respond with an array of article objects sorted by user's choice", () => {
-    //     return request(app)
-    //       .get("/api/articles?sort_by=votes")
-    //       .expect(200)
-    //       .then(({ body: articles }) => {
-    //         expect(articles).toBeSortedBy("votes", { descending: true });
-    //       });
-    //   });
-    // });
+    test("Status:200 - Accepts sort_by query", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title")
+        .expect(200)
+        .then(({ body: { articles, total_count } }) => {
+          expect(total_count).toBe(12);
+          expect(articles).toBeSortedBy("title", { descending: true });
+        });
+    });
+    test("Status:400 - Invalid sort by", () => {
+      return request(app)
+        .get("/api/articles?sort_by=Invalid")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid query");
+        });
+    });
+    test("Status:200 - Accepts order query", () => {
+      return request(app)
+        .get("/api/articles?order=ASC")
+        .expect(200)
+        .then(({ body: { articles, total_count } }) => {
+          expect(total_count).toBe(12);
+          expect(articles).toBeSortedBy("created_at", { descending: false });
+        });
+    });
+    test("Status:400 - Invalid order query", () => {
+      return request(app)
+        .get("/api/articles?order=Invalid")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid query");
+        });
+    });
+    test("Status:200 - Accepts topic query", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body: { articles, total_count } }) => {
+          expect(total_count).toBe(11);
+          articles.forEach((article) => {
+            expect(article.topic).toBe("mitch");
+          });
+        });
+    });
+    test("Status:200 - Accepts limit query", () => {
+      return request(app)
+        .get("/api/articles?limit=5")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles.length).toBe(5);
+        });
+    });
+    test("Status:200 - Accepts page query", () => {
+      return request(app)
+        .get("/api/articles?sort_by=article_id&order=ASC&limit=5&p=2")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles.length).toBe(5);
+          expect(articles[0].article_id).toBe(6);
+        });
+    });
+    test("Status:400 - Invalid limit query", () => {
+      return request(app)
+        .get("/api/articles?limit=invalid")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad request");
+        });
+    });
+    test("Status:400 - Invalid page query", () => {
+      return request(app)
+        .get("/api/articles?p=Invalid")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad request");
+        });
+    });
   });
 });

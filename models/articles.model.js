@@ -29,13 +29,87 @@ exports.updateArticle = (id, votes) => {
     });
 };
 
-exports.fetchArticles = () => {
+// exports.fetchArticles = () => {
+//   return db
+//     .query(
+//       "SELECT articles.*, CAST(COUNT(comments.comment_id)AS int) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC;"
+//     )
+//     .then(({ rows: articles }) => {
+//       return articles;
+//     });
+// };
+
+exports.fetchArticles = ({ sort_by, order, topic, limit = 10, p }) => {
+  //MAIN QUERY
+  let queryStr = `SELECT articles.article_id,articles.title,articles.topic,articles.author,articles.votes,articles.created_at,CAST(COUNT(comments.comment_id)AS int) AS comment_count FROM articles
+  LEFT JOIN comments ON comments.article_id = articles.article_id `;
+  //SORT_BY
+  let sortByStr = `ORDER BY articles.created_at `;
+  if (sort_by) {
+    if (
+      !["title", "article_id", "topic", "author", "body", "votes"].includes(
+        sort_by
+      )
+    ) {
+      return Promise.reject({ status: 400, msg: "Invalid query" });
+    }
+    sortByStr = `ORDER BY ${sort_by} `;
+  }
+
+  //ORDER
+  if (order) {
+    if (!["ASC", "DECS"].includes(order)) {
+      return Promise.reject({ status: 400, msg: "Invalid query" });
+    }
+    sortByStr += `${order} `;
+  } else {
+    sortByStr += `DESC `;
+  }
+  //TOPIC
+  const queryValues = [];
+  if (topic) {
+    queryStr += `WHERE topic = $1 `;
+    queryValues.push(topic);
+  }
+  //LIMIT
+  let limitStr = "";
+  if (limit) {
+    if (!/\d/.test(limit)) {
+      return Promise.reject({ status: 400, msg: "Bad request" });
+    }
+    limitStr = `LIMIT ${limit} `;
+  }
+  //PAGE
+  let pageStr = ";";
+  if (p) {
+    if (!/\d/.test(p)) {
+      return Promise.reject({ status: 400, msg: "Bad request" });
+    }
+    pageStr = `OFFSET ${(p - 1) * limit};`;
+  }
+
+  //DO QUERY
+  // queryStr += `GROUP BY articles.article_id ` + sortByStr + limitStr + pageStr;
   return db
     .query(
-      "SELECT articles.*, CAST(COUNT(comments.comment_id)AS int) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC;"
+      queryStr +
+        `GROUP BY articles.article_id ` +
+        sortByStr +
+        limitStr +
+        pageStr,
+      queryValues
     )
-    .then(({ rows: articles }) => {
-      return articles;
+    .then(({ rows }) => {
+      return Promise.all([
+        rows,
+        db.query(
+          queryStr + `GROUP BY articles.article_id ` + sortByStr,
+          queryValues
+        ),
+      ]);
+    })
+    .then(([articles, { rowCount }]) => {
+      return { articles, total_count: rowCount };
     });
 };
 
