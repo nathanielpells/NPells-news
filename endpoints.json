@@ -18,21 +18,22 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all topics",
-    "queries": "order",
+    "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
-          "title": "Hello",
-          "topic": "greeting",
-          "author": "GordonRamsey",
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
           "body": "Text from the article..",
-          "created_at": 1227795453481,
+          "created_at": 1527695953341,
           "votes": 11,
           "comment_count": 1
         }
       ]
     }
   },
+
   "GET /api/articles/:article_id": {
     "description": "returns article by article id",
     "queries": [],

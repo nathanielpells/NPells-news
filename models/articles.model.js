@@ -29,16 +29,6 @@ exports.updateArticle = (id, votes) => {
     });
 };
 
-// exports.fetchArticles = () => {
-//   return db
-//     .query(
-//       "SELECT articles.*, CAST(COUNT(comments.comment_id)AS int) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC;"
-//     )
-//     .then(({ rows: articles }) => {
-//       return articles;
-//     });
-// };
-
 exports.fetchArticles = ({ sort_by, order, topic, limit = 10, p }) => {
   //MAIN QUERY
   let queryStr = `SELECT articles.article_id,articles.title,articles.topic,articles.author,articles.votes,articles.created_at,CAST(COUNT(comments.comment_id)AS int) AS comment_count FROM articles
