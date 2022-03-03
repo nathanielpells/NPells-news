@@ -6,7 +6,7 @@ The database contains information on users, articles, comments and topics.
 
 The API was built using Postgres SQL and node-postgres.
 
-You can find a live version of this API at: https://np-news.herokuapp.com/
+You can find a live version of this API at: https://np-news.herokuapp.com/api
 
 Requirements
 You will need the following: Node v17.2 or higher, Postgres v8.7.3 or higher, dotenv v16 or higher and NPM v8.1.4 or higher.
