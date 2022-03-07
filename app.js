@@ -18,6 +18,7 @@ const {
 } = require("./controllers/errors.controller");
 const app = express();
 app.use(express.json());
+const cors = require("cors");
 
 app.get("/api", getEndpoints);
 app.get("/api/topics", getTopics);
