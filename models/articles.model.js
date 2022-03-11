@@ -37,9 +37,16 @@ exports.fetchArticles = ({ sort_by, order, topic, limit = 10, p }) => {
   let sortByStr = `ORDER BY articles.created_at `;
   if (sort_by) {
     if (
-      !["title", "article_id", "topic", "author", "body", "votes"].includes(
-        sort_by
-      )
+      ![
+        "title",
+        "article_id",
+        "topic",
+        "author",
+        "body",
+        "votes",
+        "created_at",
+        "comment_count",
+      ].includes(sort_by)
     ) {
       return Promise.reject({ status: 400, msg: "Invalid query" });
     }
