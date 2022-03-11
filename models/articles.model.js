@@ -29,7 +29,7 @@ exports.updateArticle = (id, votes) => {
     });
 };
 
-exports.fetchArticles = ({ sort_by, order, topic, limit = 10, p }) => {
+exports.fetchArticles = (sort_by, order, topic, limit = 10, p) => {
   //MAIN QUERY
   let queryStr = `SELECT articles.article_id,articles.title,articles.topic,articles.author,articles.votes,articles.created_at,CAST(COUNT(comments.comment_id)AS int) AS comment_count FROM articles
   LEFT JOIN comments ON comments.article_id = articles.article_id `;
@@ -55,7 +55,7 @@ exports.fetchArticles = ({ sort_by, order, topic, limit = 10, p }) => {
 
   //ORDER
   if (order) {
-    if (!["ASC", "DECS"].includes(order)) {
+    if (!["ASC", "DESC"].includes(order)) {
       return Promise.reject({ status: 400, msg: "Invalid query" });
     }
     sortByStr += `${order} `;
@@ -68,7 +68,7 @@ exports.fetchArticles = ({ sort_by, order, topic, limit = 10, p }) => {
     queryStr += `WHERE topic = $1 `;
     queryValues.push(topic);
   }
-  //LIMIT
+  // LIMIT;
   let limitStr = "";
   if (limit) {
     if (!/\d/.test(limit)) {

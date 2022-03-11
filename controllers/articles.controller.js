@@ -30,7 +30,8 @@ exports.patchArticleById = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  fetchArticles(req.query)
+  const { sort_by, order, topic, limit, p } = req.query;
+  fetchArticles(sort_by, order, topic, limit, p)
     .then(({ articles, total_count }) => {
       res.status(200).send({ articles, total_count });
     })

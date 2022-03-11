@@ -15,11 +15,11 @@ exports.handlePsqlError = (err, req, res, next) => {
 };
 
 exports.handleCustomError = (err, req, res, next) => {
-  console.log(err);
   if (err.status && err.msg) res.status(err.status).send({ msg: err.msg });
   else next(err);
 };
 
 exports.handle500 = (err, req, res) => {
+  console.log(err);
   res.status(500).send({ msg: "internal server error" });
 };
