@@ -1,35 +1,29 @@
 const db = require("../db/connection");
 
-exports.fetchArticleById = (id) => {
-  return db
-    .query(
-      "SELECT articles.*, CAST(COUNT(comments.comment_id)AS int) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id  WHERE articles.article_id = $1 GROUP BY articles.article_id;",
-      [id]
-    )
-    .then((articles) => {
-      return articles.rows[0];
-    });
+exports.fetchArticleById = async (id) => {
+  const articles = await db.query(
+    "SELECT articles.*, CAST(COUNT(comments.comment_id)AS int) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id  WHERE articles.article_id = $1 GROUP BY articles.article_id;",
+    [id]
+  );
+  return articles.rows[0];
 };
 
-exports.updateArticle = (id, votes) => {
-  return db
-    .query(
-      "UPDATE articles SET votes = votes + $2 WHERE article_id = $1 RETURNING *;",
-      [id, votes]
-    )
-    .then(({ rows }) => {
-      const article = rows[0];
-      if (!article) {
-        return Promise.reject({
-          status: 404,
-          msg: `No article found for article_id: ${id}`,
-        });
-      }
-      return article;
+exports.updateArticle = async (id, votes) => {
+  const { rows } = await db.query(
+    "UPDATE articles SET votes = votes + $2 WHERE article_id = $1 RETURNING *;",
+    [id, votes]
+  );
+  const article = rows[0];
+  if (!article) {
+    return Promise.reject({
+      status: 404,
+      msg: `No article found for article_id: ${id}`,
     });
+  }
+  return article;
 };
 
-exports.fetchArticles = (sort_by, order, topic, limit = 10, p) => {
+exports.fetchArticles = async (sort_by, order, topic, limit = 10, p) => {
   //MAIN QUERY
   let queryStr = `SELECT articles.article_id,articles.title,articles.topic,articles.author,articles.votes,articles.created_at,CAST(COUNT(comments.comment_id)AS int) AS comment_count FROM articles
   LEFT JOIN comments ON comments.article_id = articles.article_id `;
@@ -65,9 +59,19 @@ exports.fetchArticles = (sort_by, order, topic, limit = 10, p) => {
   //TOPIC
   const queryValues = [];
   if (topic) {
+    const { rows: topics } = await db.query(
+      "SELECT * FROM topics WHERE slug = $1;",
+      [topic]
+    );
+
+    if (topics.length === 0) {
+      return Promise.reject({ status: 404, msg: "topic not found" });
+    }
+
     queryStr += `WHERE topic = $1 `;
     queryValues.push(topic);
   }
+
   // LIMIT;
   let limitStr = "";
   if (limit) {
@@ -87,38 +91,29 @@ exports.fetchArticles = (sort_by, order, topic, limit = 10, p) => {
 
   //DO QUERY
   // queryStr += `GROUP BY articles.article_id ` + sortByStr + limitStr + pageStr;
-  return db
-    .query(
-      queryStr +
-        `GROUP BY articles.article_id ` +
-        sortByStr +
-        limitStr +
-        pageStr,
+  const { rows: rows_1 } = await db.query(
+    queryStr + `GROUP BY articles.article_id ` + sortByStr + limitStr + pageStr,
+    queryValues
+  );
+  const [articles, { rowCount }] = await Promise.all([
+    rows_1,
+    db.query(
+      queryStr + `GROUP BY articles.article_id ` + sortByStr,
       queryValues
-    )
-    .then(({ rows }) => {
-      return Promise.all([
-        rows,
-        db.query(
-          queryStr + `GROUP BY articles.article_id ` + sortByStr,
-          queryValues
-        ),
-      ]);
-    })
-    .then(([articles, { rowCount }]) => {
-      return { articles, total_count: rowCount };
-    });
+    ),
+  ]);
+  return { articles, total_count: rowCount };
 };
 
-exports.fetchCommentsById = (id) => {
-  return db
-    .query("SELECT * FROM comments WHERE article_id = $1;", [id])
-    .then((comments) => {
-      return comments.rows;
-    });
+exports.fetchCommentsById = async (id) => {
+  const comments = await db.query(
+    "SELECT * FROM comments WHERE article_id = $1;",
+    [id]
+  );
+  return comments.rows;
 };
 
-exports.addComment = (id, reqBody) => {
+exports.addComment = async (id, reqBody) => {
   const { username, body } = reqBody;
   const reqKeys = Object.keys(reqBody);
   if (reqKeys.length < 2) {
@@ -132,13 +127,10 @@ exports.addComment = (id, reqBody) => {
       msg: "invalid key",
     });
   } else {
-    return db
-      .query(
-        "INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;",
-        [id, username, body]
-      )
-      .then(({ rows: comment }) => {
-        return comment;
-      });
+    const { rows: comment } = await db.query(
+      "INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;",
+      [id, username, body]
+    );
+    return comment;
   }
 };

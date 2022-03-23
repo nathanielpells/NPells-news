@@ -365,6 +365,14 @@ describe("app", () => {
           expect(msg).toBe("Bad request");
         });
     });
+    test('Status: 404 - should respond with "topic not found" if topic is valid and not found', () => {
+      return request(app)
+        .get("/api/articles?topic=not-a-topic")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("topic not found");
+        });
+    });
     test("Status:400 - Invalid page query", () => {
       return request(app)
         .get("/api/articles?p=Invalid")
