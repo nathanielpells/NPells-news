@@ -34,10 +34,8 @@ app.delete("/api/comments/:comment_id", deleteCommentById);
 // handling an invalid api path
 app.all("/*", handle404);
 //handling other errors
-app.use(handlePsqlError);
-
 app.use(handleCustomError);
-
+app.use(handlePsqlError);
 app.use(handle500);
 
 module.exports = app;
