@@ -1,11 +1,14 @@
 const db = require("../db/connection");
 
 exports.fetchArticleById = async (id) => {
-  const articles = await db.query(
-    "SELECT articles.*, CAST(COUNT(comments.comment_id)AS int) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id  WHERE articles.article_id = $1 GROUP BY articles.article_id;",
+  const { rows: article } = await db.query(
+    "SELECT articles.*, COUNT(comments) AS comment_count FROM comments LEFT JOIN articles ON articles.article_id = comments.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;",
     [id]
   );
-  return articles.rows[0];
+  if (article.length === 0) {
+    return Promise.reject({ status: 404, msg: "article not found" });
+  }
+  return article[0];
 };
 
 exports.updateArticle = async (id, votes) => {
