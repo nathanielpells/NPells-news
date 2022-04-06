@@ -1,4 +1,4 @@
-# My News API
+# My News API ":rolled_up_newspaper:"
 
 This project builds a RESTful API around the Northcoders News Database.
 
@@ -8,12 +8,14 @@ The API was built using Postgres SQL and node-postgres.
 
 You can find a live version of this API at: https://np-news.herokuapp.com/api
 
-Requirements
+## Requirements
+
 You will need the following: Node v17.2 or higher, Postgres v8.7.3 or higher, dotenv v16 or higher and NPM v8.1.4 or higher.
 
 To complete testing, you will need Jest version 27.5.1 or above, Supertest 6.2.2, jest-extended 2.0, jest-sorted v1.0.14, and pg-format v1.0.4 or better.
 
-Database Setup
+## Database Setup
+
 You will also need to create two .env files in the route directory with the names of your development and test databases. These should be named .env.test and .env.development respectively.
 
 After completing this step, create the database by typing
@@ -24,14 +26,16 @@ from the terminal. To seed the data, you will then need to run
 
 npm run seed
 
-Getting Started
+## Getting Started
+
 Clone the repo in the usual way, and ensure you run:
 
 npm install
 
 From the terminal to install the dependencies. For testing purposes, you will also need Jest, Supertest and Jest-Sorted.
 
-End-points
+## End-points
+
 Available end points are:
 
 GET /api/
@@ -49,7 +53,9 @@ POST /api/topics/
 POST /api/articles/:article_id/comments
 DELETE /api/comments/:comment_id
 DELETE /api/articles/:article_id
-Testing
+
+## Testing
+
 This API was built using Test Driven Development (TDD) Methodology. Extensive testing was used in it's creation and is included in the repo. If you would like to run testing, please enter into the terminal
 
 npm i -D jest
