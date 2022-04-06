@@ -1,4 +1,4 @@
-# My News API ":rolled_up_newspaper:"
+# My News API :newspaper:
 
 This project builds a RESTful API around the Northcoders News Database.
 
